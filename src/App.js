@@ -1,112 +1,149 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
-import type {Node} from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
+  Alert, Button, StatusBar, StyleSheet, TouchableOpacity, View,
 } from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+// import { GameEngine, dispatch } from 'react-native-game-engine';
+import { GameEngine } from 'react-native-game-engine';
+import Head from './app/components/head';
+import Food from './app/components/food';
+import Tail from './app/components/tail';
+import Constants from './app/api/Constants';
+import { randomBetween } from './app/api/helper';
+import GameLoop from './app/api/systems';
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  screen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  controls: {
+    width: 300,
+    height: 300,
+    flexDirection: 'column',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  controlRow: {
+    height: 100,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
-  highlight: {
-    fontWeight: '700',
+  control: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'blue',
   },
 });
 
-export default App;
+export default function AlpacaSnakeGame() {
+  const boardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
+  let engine = null;
+  const [running, setRunning] = useState(true);
+
+  // const randomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+  const onEvent = (e) => {
+    if (e.type === 'game-over') {
+      setRunning(false);
+      Alert.alert('Game Over');
+    }
+  };
+
+  const reset = () => {
+    engine.swap({
+      1: {
+        // position: [0, 0],
+        xspeed: 1,
+        yspeed: 0,
+        nextMove: 10,
+        updateFrequency: 10,
+        // size: 20,
+        renderer: <Head position={[0, 0]} size={20} />,
+      },
+      2: {
+        /* position: [randomBetween(0, Constants.GRID_SIZE - 1),
+        randomBetween(0, Constants.GRID_SIZE - 1)], */
+        // size: 20,
+        renderer: <Food
+          position={[randomBetween(0, Constants.GRID_SIZE - 1),
+            randomBetween(0, Constants.GRID_SIZE - 1)]}
+          size={20}
+        />,
+      },
+      3: {
+        // size: 20,
+        // elements: [],
+        renderer: <Tail elements={[]} size={20} />,
+      },
+    });
+    setRunning(true);
+  };
+
+  return (
+    <View style={styles.screen}>
+      <GameEngine
+        ref={(ref) => { engine = ref; }}
+        style={[{
+          width: boardSize, height: boardSize, backgroundColor: '#ffffff', flex: null,
+        }]}
+        systems={[GameLoop]}
+        entities={{
+          head: {
+            position: [0, 0],
+            xspeed: 1,
+            yspeed: 0,
+            nextMove: 10,
+            updateFrequency: 10,
+            size: 20,
+            renderer: <Head position={[0, 0]} size={20} />,
+          },
+          food: {
+            position: [randomBetween(0, Constants.GRID_SIZE - 1),
+              randomBetween(0, Constants.GRID_SIZE - 1)],
+            size: 20,
+            renderer: <Food
+              position={[randomBetween(0, Constants.GRID_SIZE - 1),
+                randomBetween(0, Constants.GRID_SIZE - 1)]}
+              size={20}
+            />,
+          },
+          tail: {
+            size: 20,
+            elements: [],
+            renderer: <Tail elements={[]} size={20} />,
+          },
+        }}
+        running={running}
+        onEvent={onEvent}
+      >
+
+        <StatusBar hidden />
+
+      </GameEngine>
+      <Button title="New Game" onPress={reset} />
+
+      <View style={styles.controls}>
+        <View style={styles.controlRow}>
+          <TouchableOpacity onPress={() => { engine.dispatch({ type: 'move-up' }); }}>
+            <View style={styles.control} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.controlRow}>
+          <TouchableOpacity onPress={() => { engine.dispatch({ type: 'move-left' }); }}>
+            <View style={styles.control} />
+          </TouchableOpacity>
+          <View style={[styles.control, { backgroundColor: null }]} />
+          <TouchableOpacity onPress={() => { engine.dispatch({ type: 'move-right' }); }}>
+            <View style={styles.control} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.controlRow}>
+          <TouchableOpacity onPress={() => { engine.dispatch({ type: 'move-down' }); }}>
+            <View style={styles.control} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+}
