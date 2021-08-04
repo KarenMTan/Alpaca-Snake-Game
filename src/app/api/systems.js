@@ -27,7 +27,7 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
     }
   } */
 
-  // Swipe controls?
+  // Swipe controls
   touches.filter((t) => t.type === 'move').forEach((t) => {
     if (head && head.position) {
       if (t.delta.pageY && t.delta.pageX) {

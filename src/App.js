@@ -53,28 +53,24 @@ export default function AlpacaSnakeGame() {
   const reset = () => {
     engine.swap({
       1: {
-        // position: [0, 0],
+        position: [0, 0],
         xspeed: 1,
         yspeed: 0,
         nextMove: 10,
         updateFrequency: 10,
-        // size: 20,
-        renderer: <Head position={[0, 0]} size={20} />,
+        size: 20,
+        renderer: <Head />,
       },
       2: {
-        /* position: [randomBetween(0, Constants.GRID_SIZE - 1),
-        randomBetween(0, Constants.GRID_SIZE - 1)], */
-        // size: 20,
-        renderer: <Food
-          position={[randomBetween(0, Constants.GRID_SIZE - 1),
-            randomBetween(0, Constants.GRID_SIZE - 1)]}
-          size={20}
-        />,
+        position: [randomBetween(0, Constants.GRID_SIZE - 1),
+          randomBetween(0, Constants.GRID_SIZE - 1)],
+        size: 20,
+        renderer: <Food />,
       },
       3: {
-        // size: 20,
-        // elements: [],
-        renderer: <Tail elements={[]} size={20} />,
+        size: 20,
+        elements: [],
+        renderer: <Tail />,
       },
     });
     setRunning(true);
@@ -96,22 +92,18 @@ export default function AlpacaSnakeGame() {
             nextMove: 10,
             updateFrequency: 10,
             size: 20,
-            renderer: <Head position={[0, 0]} size={20} />,
+            renderer: <Head />,
           },
           food: {
             position: [randomBetween(0, Constants.GRID_SIZE - 1),
               randomBetween(0, Constants.GRID_SIZE - 1)],
             size: 20,
-            renderer: <Food
-              position={[randomBetween(0, Constants.GRID_SIZE - 1),
-                randomBetween(0, Constants.GRID_SIZE - 1)]}
-              size={20}
-            />,
+            renderer: <Food />,
           },
           tail: {
             size: 20,
             elements: [],
-            renderer: <Tail elements={[]} size={20} />,
+            renderer: <Tail />,
           },
         }}
         running={running}

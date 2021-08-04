@@ -25,5 +25,7 @@ export default function Head({
 
 Head.propTypes = {
   position: PropTypes.arrayOf(PropTypes.number).isRequired,
+  // xPos: PropTypes.number.isRequired,
+  // yPos: PropTypes.number.isRequired,
   size: PropTypes.number.isRequired,
 };
