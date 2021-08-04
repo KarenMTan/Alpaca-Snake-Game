@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Alert, Button, StatusBar, StyleSheet, TouchableOpacity, View,
+  Alert, Button, StatusBar, StyleSheet, View,
 } from 'react-native';
-// import { GameEngine, dispatch } from 'react-native-game-engine';
 import { GameEngine } from 'react-native-game-engine';
 import Head from './app/components/head';
 import Food from './app/components/food';
@@ -41,7 +40,28 @@ export default function AlpacaSnakeGame() {
   let engine = null;
   const [running, setRunning] = useState(true);
 
-  // const randomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+  const entities = {
+    head: {
+      position: [0, 0],
+      xspeed: 1,
+      yspeed: 0,
+      nextMove: 10,
+      updateFrequency: 10,
+      size: 20,
+      renderer: <Head />,
+    },
+    food: {
+      position: [randomBetween(0, Constants.GRID_SIZE - 1),
+        randomBetween(0, Constants.GRID_SIZE - 1)],
+      size: 20,
+      renderer: <Food />,
+    },
+    tail: {
+      size: 20,
+      elements: [],
+      renderer: <Tail />,
+    },
+  };
 
   const onEvent = (e) => {
     if (e.type === 'game-over') {
@@ -51,28 +71,7 @@ export default function AlpacaSnakeGame() {
   };
 
   const reset = () => {
-    engine.swap({
-      1: {
-        position: [0, 0],
-        xspeed: 1,
-        yspeed: 0,
-        nextMove: 10,
-        updateFrequency: 10,
-        size: 20,
-        renderer: <Head />,
-      },
-      2: {
-        position: [randomBetween(0, Constants.GRID_SIZE - 1),
-          randomBetween(0, Constants.GRID_SIZE - 1)],
-        size: 20,
-        renderer: <Food />,
-      },
-      3: {
-        size: 20,
-        elements: [],
-        renderer: <Tail />,
-      },
-    });
+    engine.swap(entities);
     setRunning(true);
   };
 
@@ -84,28 +83,7 @@ export default function AlpacaSnakeGame() {
           width: boardSize, height: boardSize, backgroundColor: '#ffffff', flex: null,
         }]}
         systems={[GameLoop]}
-        entities={{
-          head: {
-            position: [0, 0],
-            xspeed: 1,
-            yspeed: 0,
-            nextMove: 10,
-            updateFrequency: 10,
-            size: 20,
-            renderer: <Head />,
-          },
-          food: {
-            position: [randomBetween(0, Constants.GRID_SIZE - 1),
-              randomBetween(0, Constants.GRID_SIZE - 1)],
-            size: 20,
-            renderer: <Food />,
-          },
-          tail: {
-            size: 20,
-            elements: [],
-            renderer: <Tail />,
-          },
-        }}
+        entities={entities}
         running={running}
         onEvent={onEvent}
       >
