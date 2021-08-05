@@ -57,9 +57,9 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
     head.nextMove = head.updateFrequency;
     if (
       head.position[0] + head.xspeed < 0
-            || head.position[0] + head.xspeed >= Constants.GRID_SIZE
+            || head.position[0] + head.xspeed >= Constants.GRID_WIDTH
             || head.position[1] + head.yspeed < 0
-            || head.position[1] + head.yspeed >= Constants.GRID_SIZE
+            || head.position[1] + head.yspeed >= Constants.GRID_HEIGHT
     ) {
       // snake hits the wall
       dispatch({ type: 'game-over' });
@@ -84,8 +84,8 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
         // eating Food
         tail.elements = [[food.position[0], food.position[1]]].concat(tail.elements);
 
-        food.position[0] = randomBetween(0, Constants.GRID_SIZE - 1);
-        food.position[1] = randomBetween(0, Constants.GRID_SIZE - 1);
+        food.position[0] = randomBetween(0, Constants.GRID_WIDTH - 1);
+        food.position[1] = randomBetween(0, Constants.GRID_HEIGHT - 1);
       }
     }
   }

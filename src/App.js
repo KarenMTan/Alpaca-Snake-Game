@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
-  Alert, Button, StatusBar, StyleSheet, View,
+  StyleSheet, View, Text,
 } from 'react-native';
 import { GameEngine } from 'react-native-game-engine';
 import Head from './app/components/head';
 import Food from './app/components/food';
 import Tail from './app/components/tail';
+import GameOver from './app/components/gameOver';
 import Constants from './app/api/Constants';
 import { randomBetween } from './app/api/helper';
 import GameLoop from './app/api/systems';
@@ -15,6 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'cornflowerblue',
   },
   controls: {
     width: 300,
@@ -36,7 +38,8 @@ const styles = StyleSheet.create({
 });
 
 export default function AlpacaSnakeGame() {
-  const boardSize = Constants.GRID_SIZE * Constants.CELL_SIZE;
+  const boardWidth = Constants.MAX_WIDTH;
+  const boardHeight = Constants.MAX_HEIGHT - Constants.HEADER_HEIGHT;
   let engine = null;
   const [running, setRunning] = useState(true);
 
@@ -51,8 +54,8 @@ export default function AlpacaSnakeGame() {
       renderer: <Head />,
     },
     food: {
-      position: [randomBetween(0, Constants.GRID_SIZE - 1),
-        randomBetween(0, Constants.GRID_SIZE - 1)],
+      position: [randomBetween(0, Constants.GRID_WIDTH - 1),
+        randomBetween(0, Constants.GRID_HEIGHT - 1)],
       size: 20,
       renderer: <Food />,
     },
@@ -66,7 +69,6 @@ export default function AlpacaSnakeGame() {
   const onEvent = (e) => {
     if (e.type === 'game-over') {
       setRunning(false);
-      Alert.alert('Game Over');
     }
   };
 
@@ -75,23 +77,31 @@ export default function AlpacaSnakeGame() {
     setRunning(true);
   };
 
+  /**
+   * TODO: Game Mechanics
+   * - smoother movement (faster)
+   * - components accept assets
+   * - change board to the device screen size
+   *      - keep in mind fence border
+   */
+
   return (
     <View style={styles.screen}>
+      <Text style={{ paddingTop: 20, textTransform: 'uppercase', height: Constants.HEADER_HEIGHT }}>Score   #####</Text>
       <GameEngine
         ref={(ref) => { engine = ref; }}
         style={[{
-          width: boardSize, height: boardSize, backgroundColor: '#ffffff', flex: null,
+          width: boardWidth,
+          height: boardHeight,
+          backgroundColor: '#ffffff',
+          flex: null,
         }]}
         systems={[GameLoop]}
         entities={entities}
         running={running}
         onEvent={onEvent}
-      >
-
-        <StatusBar hidden />
-
-      </GameEngine>
-      <Button title="New Game" onPress={reset} />
+      />
+      <GameOver isVisible={!running} onPress={reset} />
     </View>
   );
 }

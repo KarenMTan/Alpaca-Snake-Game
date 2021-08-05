@@ -22,7 +22,7 @@ export default function Tail({
     />
   ));
   return (
-    <View style={{ width: Constants.GRID_SIZE * size, height: Constants.GRID_SIZE * size }}>
+    <View style={{ width: Constants.GRID_WIDTH * size, height: Constants.GRID_HEIGHT * size }}>
       {tailList}
     </View>
   );
