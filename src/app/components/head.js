@@ -1,10 +1,10 @@
+/* eslint-disable global-require */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 
 const styles = StyleSheet.create({
   finger: {
-    backgroundColor: '#888888',
     position: 'absolute',
   },
 });
@@ -16,10 +16,14 @@ export default function Head({
   const x = position[0];
   const y = position[1];
   return (
-    <View style={[styles.finger, {
-      width: size, height: size, left: x * size, top: y * size,
-    }]}
-    />
+    <View style={[styles.finger]}>
+      <Image
+        source={require('../assets/alpaca.png')}
+        style={[{
+          width: size, height: size, left: x * size, top: y * size,
+        }]}
+      />
+    </View>
   );
 }
 
