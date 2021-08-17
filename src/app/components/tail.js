@@ -4,15 +4,23 @@ import { View, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import Constants from '../api/Constants';
 
+/**
+ *
+ * @param {array} positions - An array of each tail element's position.
+ * @param {number} size - The size of the element
+ * @param {array} assetSources - An array of each tail element's assetSource.
+ * @returns
+ */
 export default function Tail({
-  elements,
+  positions,
   size,
+  assetSources,
 }) {
-  const tailList = elements.map((el, idx) => (
+  const tailList = positions.map((el, idx) => (
     <Image
       // eslint-disable-next-line react/no-array-index-key
       key={idx}
-      source={require('../assets/alpaca.png')}
+      source={assetSources[idx]}
       style={{
         width: size,
         height: size,
@@ -31,6 +39,7 @@ export default function Tail({
 }
 
 Tail.propTypes = {
-  elements: PropTypes.arrayOf(PropTypes.any).isRequired,
+  positions: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
   size: PropTypes.number.isRequired,
+  assetSources: PropTypes.arrayOf(PropTypes.number).isRequired,
 };

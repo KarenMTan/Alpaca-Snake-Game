@@ -1,6 +1,6 @@
 // import React from 'react';
 import Constants from './Constants';
-import { randomBetween } from './helper';
+import { randomBetween, randomObject } from './helper';
 
 // eslint-disable-next-line no-unused-vars
 const GameLoop = (entities, { touches, dispatch, events }) => {
@@ -65,8 +65,10 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
       dispatch({ type: 'game-over' });
     } else {
       // move the tail
-      const newTail = [[head.position[0], head.position[1]]];
-      tail.elements = newTail.concat(tail.elements).slice(0, -1);
+      const newTail = [head.position[0], head.position[1]];
+
+      tail.positions.unshift(newTail);
+      tail.positions.pop();
 
       // snake moves
       head.position[0] += head.xspeed;
@@ -74,18 +76,24 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
 
       // check if it hits the tail
       // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < tail.elements.length; i++) {
-        if (tail.elements[i][0] === head.position[0] && tail.elements[i][1] === head.position[1]) {
+      for (let i = 0; i < tail.positions.length; i++) {
+        if (tail.positions[i][0] === head.position[0]
+          && tail.positions[i][1] === head.position[1]) {
           dispatch({ type: 'game-over' });
         }
       }
 
       if (head.position[0] === food.position[0] && head.position[1] === food.position[1]) {
         // eating Food
-        tail.elements = [[food.position[0], food.position[1]]].concat(tail.elements);
+        tail.positions = [[food.position[0], food.position[1]]].concat(tail.positions);
+        tail.assetSources.push(food.assetSource);
 
         food.position[0] = randomBetween(0, Constants.GRID_WIDTH - 1);
         food.position[1] = randomBetween(0, Constants.GRID_HEIGHT - 1);
+
+        food.assetSource = randomObject();
+
+        dispatch({ type: 'add-10' });
       }
     }
   }

@@ -8,7 +8,7 @@ import Food from './app/components/food';
 import Tail from './app/components/tail';
 import GameOver from './app/components/gameOver';
 import Constants from './app/api/Constants';
-import { randomBetween } from './app/api/helper';
+import { randomBetween, randomObject } from './app/api/helper';
 import GameLoop from './app/api/systems';
 
 const styles = StyleSheet.create({
@@ -38,10 +38,15 @@ const styles = StyleSheet.create({
 });
 
 export default function AlpacaSnakeGame() {
-  const boardWidth = Constants.MAX_WIDTH;
-  const boardHeight = Constants.MAX_HEIGHT - Constants.HEADER_HEIGHT;
+  const boardWidth = Constants.VISUAL_WIDTH;
+  const boardHeight = Constants.VISUAL_HEIGHT;
+  const cellSize = Constants.CELL_SIZE;
   let engine = null;
+
   const [running, setRunning] = useState(true);
+  const [score, setScore] = useState(0);
+
+  const nextTail = randomObject();
 
   const entities = {
     head: {
@@ -50,18 +55,20 @@ export default function AlpacaSnakeGame() {
       yspeed: 0,
       nextMove: 2,
       updateFrequency: 2,
-      size: 20,
+      size: cellSize,
       renderer: <Head />,
     },
     food: {
+      assetSource: nextTail,
       position: [randomBetween(0, Constants.GRID_WIDTH - 1),
         randomBetween(0, Constants.GRID_HEIGHT - 1)],
-      size: 20,
+      size: cellSize,
       renderer: <Food />,
     },
     tail: {
-      size: 20,
-      elements: [],
+      size: cellSize,
+      positions: [],
+      assetSources: [],
       renderer: <Tail />,
     },
   };
@@ -69,38 +76,48 @@ export default function AlpacaSnakeGame() {
   const onEvent = (e) => {
     if (e.type === 'game-over') {
       setRunning(false);
+    } else if (e.type === 'add-10') {
+      setScore(score + 10);
     }
   };
 
   const reset = () => {
     engine.swap(entities);
+    setScore(0);
     setRunning(true);
   };
 
   /**
-   * TODO: Game Mechanics
-   * - smoother movement (faster)
-   * - components accept assets
-   * - change board to the device screen size
-   *      - keep in mind fence border
+    * TODO: Game Mechanics II
+    * - test border
+    * - spawn percentage
+    * - score
+    * - tail
    */
 
   return (
     <View style={styles.screen}>
-      <Text style={{ paddingTop: 20, textTransform: 'uppercase', height: Constants.HEADER_HEIGHT }}>Score   #####</Text>
-      <GameEngine
-        ref={(ref) => { engine = ref; }}
-        style={[{
-          width: boardWidth,
-          height: boardHeight,
-          backgroundColor: '#ffffff',
-          flex: null,
-        }]}
-        systems={[GameLoop]}
-        entities={entities}
-        running={running}
-        onEvent={onEvent}
-      />
+      <Text style={{ paddingTop: 20, textTransform: 'uppercase', height: Constants.HEADER_HEIGHT }}>
+        Score
+        {'     '}
+        {score}
+      </Text>
+      <View style={{ borderColor: 'red', borderWidth: cellSize, borderStyle: 'solid' }}>
+        <GameEngine
+          ref={(ref) => { engine = ref; }}
+          style={[{
+            width: boardWidth,
+            height: boardHeight,
+            backgroundColor: '#ffffff',
+            flex: null,
+          }]}
+          systems={[GameLoop]}
+          entities={entities}
+          running={running}
+          onEvent={onEvent}
+        />
+      </View>
+
       <GameOver isVisible={!running} onPress={reset} />
     </View>
   );
