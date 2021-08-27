@@ -12,21 +12,15 @@ const styles = StyleSheet.create({
 export default function Food({
   position,
   size,
-  assetSource,
+  info,
 }) {
   const x = position[0];
   const y = position[1];
 
-  /**
-   * So this component should be able to draw from several different things (Constant.js) depending
-   * the spawn chance. Moreover, the tail should somehow be able to read the type of the food (in
-   * order to append that asset).
-   */
-
   return (
     <View style={[styles.finger]}>
       <Image
-        source={assetSource}
+        source={info.uri}
         style={[{
           width: size, height: size, left: x * size, top: y * size,
         }]}
@@ -38,5 +32,10 @@ export default function Food({
 Food.propTypes = {
   position: PropTypes.arrayOf(PropTypes.number).isRequired,
   size: PropTypes.number.isRequired,
-  assetSource: PropTypes.number.isRequired,
+  info: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    uri: PropTypes.number.isRequired,
+    spawnRate: PropTypes.string.isRequired,
+  }).isRequired,
 };

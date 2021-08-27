@@ -13,25 +13,57 @@ const Constants = {
   CELL_SIZE: 25,
 };
 
+const SRMapping = {
+  low: 1,
+  medium: 2,
+  high: 3,
+};
+
+const SR2Point = {
+  low: 'add-500',
+  medium: 'add-200',
+  high: 'add-100',
+};
+
 const assetMapping = {
   skins: {
     alpaca: {
-      uri: "require('alpaca.png')",
+      uri: require('../assets/alpaca.png'),
     },
   },
   objects: [
     {
-      name: 'butterfly',
+      name: 'Butterfly',
+      type: 'friend',
       uri: require('../assets/butterfly.png'),
-      points: 10,
+      spawnRate: 'medium',
     },
     {
-      name: 'flower',
+      name: 'Bee',
+      type: 'friend',
+      uri: require('../assets/bee.png'),
+      spawnRate: 'medium',
+    },
+    {
+      name: 'Sheep',
+      type: 'friend',
+      uri: require('../assets/sheep.png'),
+      spawnRate: 'low',
+    },
+    {
+      name: 'Flower',
+      type: 'food',
       uri: require('../assets/flower.png'),
-      points: 5,
+      spawnRate: 'high',
+    },
+    {
+      name: 'Haybale',
+      type: 'food',
+      uri: require('../assets/haybale.png'),
+      spawnRate: 'high',
     },
   ],
 };
 
 export default Constants;
-export { assetMapping };
+export { SRMapping, SR2Point, assetMapping };

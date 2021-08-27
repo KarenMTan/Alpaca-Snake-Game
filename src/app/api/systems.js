@@ -1,5 +1,5 @@
 // import React from 'react';
-import Constants from './Constants';
+import Constants, { SR2Point } from './Constants';
 import { randomBetween, randomObject } from './helper';
 
 // eslint-disable-next-line no-unused-vars
@@ -86,14 +86,17 @@ const GameLoop = (entities, { touches, dispatch, events }) => {
       if (head.position[0] === food.position[0] && head.position[1] === food.position[1]) {
         // eating Food
         tail.positions = [[food.position[0], food.position[1]]].concat(tail.positions);
-        tail.assetSources.push(food.assetSource);
+
+        if (food.info.type === 'friend') {
+          tail.assetSources.push(food.info.uri);
+        }
+
+        dispatch({ type: SR2Point[food.info.spawnRate] });
 
         food.position[0] = randomBetween(0, Constants.GRID_WIDTH - 1);
         food.position[1] = randomBetween(0, Constants.GRID_HEIGHT - 1);
 
-        food.assetSource = randomObject();
-
-        dispatch({ type: 'add-10' });
+        food.info = randomObject();
       }
     }
   }
