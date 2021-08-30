@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, View, Text,
+  StyleSheet, View, Text, Animated,
 } from 'react-native';
 import { GameEngine } from 'react-native-game-engine';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
+import styled from 'styled-components';
 import Head from './app/components/head';
 import Food from './app/components/food';
 import Tail from './app/components/tail';
@@ -15,37 +16,20 @@ import GameLoop from './app/api/systems';
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'cornflowerblue',
-  },
-  controls: {
-    width: 300,
-    height: 300,
-    flexDirection: 'column',
-  },
-  controlRow: {
-    height: 100,
-    width: 300,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  control: {
-    width: 100,
-    height: 100,
-    backgroundColor: 'blue',
+    backgroundColor: 'white',
   },
 });
 
 export default function AlpacaSnakeGame() {
-  const boardWidth = Constants.VISUAL_WIDTH;
-  const boardHeight = Constants.VISUAL_HEIGHT;
+  const boardWidth = Constants.VISUAL_BOARD_WIDTH;
+  const boardHeight = Constants.VISUAL_BOARD_HEIGHT;
   const cellSize = Constants.CELL_SIZE;
   let engine = null;
 
   const [running, setRunning] = useState(true);
   const [score, setScore] = useState(0);
+  const [deltaScore, setDeltaScore] = useState(0);
 
   const nextTail = randomObject();
 
@@ -78,10 +62,13 @@ export default function AlpacaSnakeGame() {
     if (e.type === 'game-over') {
       setRunning(false);
     } else if (e.type === 'add-100') {
+      setDeltaScore(100);
       setScore(score + 100);
     } else if (e.type === 'add-200') {
+      setDeltaScore(200);
       setScore(score + 200);
     } else if (e.type === 'add-500') {
+      setDeltaScore(500);
       setScore(score + 500);
     }
   };
@@ -141,12 +128,28 @@ export default function AlpacaSnakeGame() {
 
   return (
     <View style={styles.screen}>
-      <Text style={{ paddingTop: 20, textTransform: 'uppercase', height: Constants.HEADER_HEIGHT }}>
-        Score
-        {'     '}
-        {score}
-      </Text>
-      <View style={{ borderColor: 'red', borderWidth: cellSize, borderStyle: 'solid' }}>
+      <View style={{
+        height: Constants.HEADER_HEIGHT,
+        width: Constants.MAX_WIDTH,
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginLeft: 20,
+      }}
+      >
+        <Text style={{ textTransform: 'uppercase', marginRight: 20 }}>
+          Score
+          {'  '}
+          {score}
+        </Text>
+        <Text style={{ color: '#858585' }}>
+          +
+          {' '}
+          {deltaScore}
+        </Text>
+      </View>
+      <View style={{ borderColor: '#858585', borderWidth: cellSize, borderStyle: 'solid' }}>
         <GameEngine
           ref={(ref) => { engine = ref; }}
           style={[{
