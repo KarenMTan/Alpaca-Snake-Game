@@ -31,12 +31,14 @@ const assetMapping = {
       uri: require('../assets/alpaca.png'),
     },
   },
-  objects: [
+  goodObjects: [
     {
       name: 'Butterfly',
       type: 'friend',
       uri: require('../assets/butterfly.png'),
       spawnRate: 'medium',
+      purchased: true,
+      equipped: true,
     },
     {
       name: 'Bee',
@@ -61,6 +63,26 @@ const assetMapping = {
       type: 'food',
       uri: require('../assets/haybale.png'),
       spawnRate: 'high',
+    },
+  ],
+  badObjects: [
+    {
+      name: 'Bear',
+      type: 'foe',
+      uri: require('../assets/bear.jpg'),
+      spawnRate: 'low',
+    },
+    {
+      name: 'wolf',
+      type: 'foe',
+      uri: require('../assets/wolf.png'),
+      spawnRate: 'low',
+    },
+    {
+      name: 'poop',
+      type: 'poison',
+      uri: require('../assets/poop.png'),
+      spawnRate: 'low',
     },
   ],
 };

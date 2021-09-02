@@ -1,15 +1,23 @@
-import { SRMapping, assetMapping } from './Constants';
+import { SRMapping } from './Constants';
 
 const randomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
-const randomObject = (() => {
-  const { objects } = assetMapping;
+const doInsertBadObject = (() => {
+  const chance = randomBetween(1, 5);
+
+  // console.log(chance);
+  return chance === 1;
+});
+
+const randomObject = ((objects) => {
+  /* const { objects } = assetMapping;
+  const { badObjects } = assetMapping; */
 
   // Possibly move this code to AsyncStorage - change only when the user has made
   // purchases/equipped new items
 
   let i;
-  const weightedProbabilities = [];
+  const weightedProbabilities = []; // Cumulative sum of the weighted probabilities
 
   // eslint-disable-next-line no-plusplus
   for (i = 0; i < objects.length; i++) {
@@ -30,4 +38,4 @@ const randomObject = (() => {
 });
 
 // eslint-disable-next-line import/prefer-default-export
-export { randomBetween, randomObject };
+export { randomBetween, randomObject, doInsertBadObject };
